@@ -9,7 +9,7 @@ export class StrapiVpc extends NestedStack {
     super(scope, id, props);
 
     this.vpc = new Vpc(this, "StrapiVPC", {
-      ipAddresses: IpAddresses.cidr("10.0.0.0/24"),
+      ipAddresses: IpAddresses.cidr("10.1.0.0/16"),
       subnetConfiguration: [
         { name: "public-subnet", subnetType: SubnetType.PUBLIC },
         {
