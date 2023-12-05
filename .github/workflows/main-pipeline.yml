@@ -26,5 +26,5 @@ jobs:
       - name: Build & Deploy Strapi
         run: |
           cd infrastructure \
-           && npm install \
+           && yarn install \
            && npx cdk deploy --require-approval never

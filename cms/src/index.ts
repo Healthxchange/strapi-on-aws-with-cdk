@@ -1,4 +1,4 @@
-export default {
+const index = {
   /**
    * An asynchronous register function that runs before
    * your application is initialized.
@@ -17,4 +17,6 @@ export default {
    * run jobs, or perform some special logic.
    */
   bootstrap(/*{ strapi }*/) {},
-};
+}
+
+export default index

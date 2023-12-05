@@ -93,7 +93,9 @@ pids
 logs
 results
 node_modules
+.yarn
 .node_history
+.eslintcache
 
 ############################
 # Tests

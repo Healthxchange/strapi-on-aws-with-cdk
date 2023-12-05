@@ -1,4 +1,4 @@
-export default {
+const appExample = {
   config: {
     locales: [
       // 'ar',
@@ -30,6 +30,8 @@ export default {
     ],
   },
   bootstrap(app) {
-    console.log(app);
+    console.log(app)
   },
-};
+}
+
+export default appExample
