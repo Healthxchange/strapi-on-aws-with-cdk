@@ -1,6 +1,6 @@
 # strapi-on-aws-with-cdk
 
-[![strapi on aws pipeline](https://github.com/ziedbentahar/strapi-on-aws-with-cdk/actions/workflows/main-pipeline.yml/badge.svg)](https://github.com/ziedbentahar/strapi-on-aws-with-cdk/actions/workflows/main-pipeline.yml)
+[![strapi on aws pipeline](https://github.com/Healthxchange/strapi-on-aws-with-cdk/actions/workflows/main-pipeline.yml/badge.svg)](https://github.com/Healthxchange/strapi-on-aws-with-cdk/actions/workflows/main-pipeline.yml)
 
 Full code and Github actions workflow for this bog post:
 
