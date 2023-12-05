@@ -1,9 +1,9 @@
 import { NestedStack, NestedStackProps } from 'aws-cdk-lib'
 import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager'
-import { IVpc } from 'aws-cdk-lib/aws-ec2'
+import { IVpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2'
 import { Cluster, ContainerImage, Secret as ecs_Secret } from 'aws-cdk-lib/aws-ecs'
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns'
-import { IApplicationLoadBalancer } from 'aws-cdk-lib/aws-elasticloadbalancingv2'
+import { ApplicationLoadBalancer, IApplicationLoadBalancer } from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam'
 import { Bucket } from 'aws-cdk-lib/aws-s3'
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager'
@@ -50,8 +50,21 @@ export class ECSService extends NestedStack {
     })
 
     const cluster = new Cluster(this, 'Cluster', { vpc })
+
+    const sg = new SecurityGroup(this, 'SecurityGroup', {
+      vpc,
+      securityGroupName: 'securitygroup',
+    })
+
+    const loadBalancer = new ApplicationLoadBalancer(this, 'LoadBalancer', {
+      vpc,
+      securityGroup: sg,
+      internetFacing: true,
+    })
+
     const loadBalancedService = new ApplicationLoadBalancedFargateService(this, 'FargateService', {
       cluster,
+      loadBalancer,
       taskImageOptions: {
         secrets: {
           ...this.getSecretsDefinition(dbSecret, strapiSecret, accessSecret),
@@ -66,9 +79,11 @@ export class ECSService extends NestedStack {
           HOST: '0.0.0.0',
           PORT: '1337',
           S3_BUCKET: s3PublicBucket.bucketDomainName,
+          NODE_ENV: 'production',
         },
       },
       certificate,
+      assignPublicIp: true,
     })
 
     const policyStatement = new PolicyStatement({
