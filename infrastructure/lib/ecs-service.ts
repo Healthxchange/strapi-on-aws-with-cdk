@@ -13,6 +13,7 @@ import {
   ListenerCondition,
 } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { Bucket } from "aws-cdk-lib/aws-s3";
 import { ISecret, Secret } from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
 
@@ -24,7 +25,8 @@ export interface ECSServiceProps extends NestedStackProps {
   dbHostname: string;
   dbPort: string;
   applicationName: string;
-  authorizedIPsForAdminAccess: string[];
+  accessSecret: ISecret;
+  s3PublicBucket: Bucket;
 }
 
 export class ECSService extends NestedStack {
@@ -41,7 +43,8 @@ export class ECSService extends NestedStack {
       dbPort,
       certificate,
       applicationName,
-      authorizedIPsForAdminAccess,
+      accessSecret,
+      s3PublicBucket,
     } = props!;
 
     const strapiSecret = new Secret(this, "StrapiSecret", {
@@ -62,7 +65,7 @@ export class ECSService extends NestedStack {
         cluster,
         taskImageOptions: {
           secrets: {
-            ...this.getSecretsDefinition(dbSecret, strapiSecret),
+            ...this.getSecretsDefinition(dbSecret, strapiSecret, accessSecret),
           },
           image: ContainerImage.fromAsset("../cms"),
           containerPort: 1337,
@@ -73,6 +76,7 @@ export class ECSService extends NestedStack {
             DATABASE_NAME: dbName,
             HOST: "0.0.0.0",
             PORT: "1337",
+            S3_BUCKET: s3PublicBucket.bucketDomainName,
           },
         },
         certificate,
@@ -88,45 +92,19 @@ export class ECSService extends NestedStack {
       policyStatement
     );
 
-    this.restricAccessToAdmin(loadBalancedService, authorizedIPsForAdminAccess);
-
     this.loadBalancer = loadBalancedService.loadBalancer;
   }
 
-  private getSecretsDefinition(dbSecret: ISecret, strapiSecret: ISecret) {
+  private getSecretsDefinition(dbSecret: ISecret, strapiSecret: ISecret, accessSecret: ISecret) {
     return {
       DATABASE_USERNAME: ecs_Secret.fromSecretsManager(dbSecret, "username"),
       DATABASE_PASSWORD: ecs_Secret.fromSecretsManager(dbSecret, "password"),
       JWT_SECRET: ecs_Secret.fromSecretsManager(strapiSecret, "StrapiKey"),
       APP_KEYS: ecs_Secret.fromSecretsManager(strapiSecret, "StrapiKey"),
       API_TOKEN_SALT: ecs_Secret.fromSecretsManager(strapiSecret, "StrapiKey"),
-      ADMIN_JWT_SECRET: ecs_Secret.fromSecretsManager(
-        strapiSecret,
-        "StrapiKey"
-      ),
+      ADMIN_JWT_SECRET: ecs_Secret.fromSecretsManager(strapiSecret, "StrapiKey"),
+      ACCESS_KEY_ID: ecs_Secret.fromSecretsManager(accessSecret, "accessKeyId"),
+      SECRET_ACCESS_KEY: ecs_Secret.fromSecretsManager(accessSecret, "secretAccessKey"),
     };
-  }
-
-  private restricAccessToAdmin(
-    loadBalancedService: ApplicationLoadBalancedFargateService,
-    authorizedIPsForAdminAccess: string[]
-  ) {
-    loadBalancedService.listener.addAction("accept", {
-      priority: 1,
-      conditions: [
-        ListenerCondition.pathPatterns(["/admin/*"]),
-        ListenerCondition.sourceIps(authorizedIPsForAdminAccess),
-      ],
-      action: ListenerAction.forward([loadBalancedService.targetGroup]),
-    });
-
-    loadBalancedService.listener.addAction("forbidden", {
-      priority: 2,
-      conditions: [ListenerCondition.pathPatterns(["/admin/*"])],
-      action: ListenerAction.fixedResponse(403, {
-        contentType: "text/html",
-        messageBody: "Your IP address is not authorized",
-      }),
-    });
   }
 }

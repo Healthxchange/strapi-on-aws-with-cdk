@@ -5,6 +5,7 @@ import Database from "./database";
 import { ECSService } from "./ecs-service";
 import { Route53Record } from "./route53-record";
 import { StrapiVpc } from "./vpc";
+import { S3PublicBucket } from "./public-s3-bucket"
 
 class StrapiStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -16,9 +17,8 @@ class StrapiStack extends Stack {
     const hostedZoneDomainName = this.node.tryGetContext(
       "hostedZoneDomainName"
     );
-    const authorizedIPsForAdminAccess: string[] = this.node
-      .tryGetContext("authorizedIPsForAdminAccess")
-      .split(",");
+
+    const allowedOrigin = this.node.tryGetContext("allowedOrigin");
 
     const domainName = `${applicationName}.${hostedZoneDomainName}`;
 
@@ -32,6 +32,8 @@ class StrapiStack extends Stack {
       domainName,
     });
 
+    const publicBucket = new S3PublicBucket(this, S3PublicBucket.name, {allowedOrigin});
+
     const ecsServiceStack = new ECSService(this, ECSService.name, {
       certificate: certificate.certificate,
       dbHostname: database.dbCluster.clusterEndpoint.hostname.toString(),
@@ -40,7 +42,8 @@ class StrapiStack extends Stack {
       dbSecret: database.dbSecret,
       vpc: vpc.vpc,
       applicationName,
-      authorizedIPsForAdminAccess,
+      accessSecret: publicBucket.accessSecret,
+      s3PublicBucket: publicBucket.bucket,
     });
 
     const records = new Route53Record(this, Route53Record.name, {
