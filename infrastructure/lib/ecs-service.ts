@@ -1,6 +1,6 @@
 import { NestedStack, NestedStackProps } from 'aws-cdk-lib'
 import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager'
-import { IVpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2'
+import { IVpc, SecurityGroup, Port, Peer } from 'aws-cdk-lib/aws-ec2'
 import { Cluster, ContainerImage, Secret as ecs_Secret } from 'aws-cdk-lib/aws-ecs'
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns'
 import { ApplicationLoadBalancer, IApplicationLoadBalancer } from 'aws-cdk-lib/aws-elasticloadbalancingv2'
@@ -11,6 +11,7 @@ import { Construct } from 'constructs'
 
 export interface ECSServiceProps extends NestedStackProps {
   vpc: IVpc
+  sg: SecurityGroup
   dbSecret: ISecret
   certificate: ICertificate
   dbName: string
@@ -29,6 +30,7 @@ export class ECSService extends NestedStack {
 
     const {
       vpc,
+      sg,
       dbSecret,
       dbHostname,
       dbName,
@@ -51,14 +53,8 @@ export class ECSService extends NestedStack {
 
     const cluster = new Cluster(this, 'Cluster', { vpc })
 
-    const sg = new SecurityGroup(this, 'SecurityGroup', {
+    const loadBalancer = new ApplicationLoadBalancer(this, 'ApplicationLoadBalancer', {
       vpc,
-      securityGroupName: 'securitygroup',
-    })
-
-    const loadBalancer = new ApplicationLoadBalancer(this, 'LoadBalancer', {
-      vpc,
-      securityGroup: sg,
       internetFacing: true,
     })
 
@@ -84,6 +80,7 @@ export class ECSService extends NestedStack {
       },
       certificate,
       assignPublicIp: true,
+      securityGroups: [sg],
     })
 
     const policyStatement = new PolicyStatement({
@@ -94,6 +91,9 @@ export class ECSService extends NestedStack {
     loadBalancedService.taskDefinition.addToExecutionRolePolicy(policyStatement)
 
     this.loadBalancer = loadBalancedService.loadBalancer
+
+    // to fix when docs work
+    // sg.addIngressRule(loadBalancer.securityGroup, Port.tcp(1337))
   }
 
   private getSecretsDefinition(dbSecret: ISecret, strapiSecret: ISecret, accessSecret: ISecret) {

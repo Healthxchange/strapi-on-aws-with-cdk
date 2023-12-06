@@ -32,6 +32,16 @@ npm run build
 yarn build
 ```
 
+### Running locally via Docker & docker-compose
+
+ - Install the latest version of [Docker](https://www.docker.com/get-started)
+
+1. Run `docker-compose up -d --build`
+2. Navigate to http://localhost:3000
+
+If you have previously been running directly and want to switch to Docker,
+delete node_modules and then run `docker-compose up -d --force-recreate`.
+
 ## ⚙️ Deployment
 
 Strapi gives you many possible deployment options for your project. Find the one that suits you on the [deployment section of the documentation](https://docs.strapi.io/developer-docs/latest/setup-deployment-guides/deployment.html).

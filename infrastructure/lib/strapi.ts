@@ -6,6 +6,7 @@ import { ECSService } from './ecs-service'
 import { Route53Record } from './route53-record'
 import { StrapiVpc } from './vpc'
 import { S3PublicBucket } from './public-s3-bucket'
+import { SecurityGroup, Port } from 'aws-cdk-lib/aws-ec2'
 
 class StrapiStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -20,9 +21,14 @@ class StrapiStack extends Stack {
 
     const domainName = `${applicationName}.${hostedZoneDomainName}`
 
+    const sg = new SecurityGroup(this, 'ServiceSecurityGroup', {
+      vpc: vpc.vpc,
+    })
+
     const database = new Database(this, Database.name, {
       applicationName,
       vpc: vpc.vpc,
+      sg,
     })
 
     const certificate = new Certificate(this, Certificate.name, {
@@ -39,6 +45,7 @@ class StrapiStack extends Stack {
       dbName: applicationName,
       dbSecret: database.dbSecret,
       vpc: vpc.vpc,
+      sg,
       applicationName,
       accessSecret: publicBucket.accessSecret,
       s3PublicBucket: publicBucket.bucket,

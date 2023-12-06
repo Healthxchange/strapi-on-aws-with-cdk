@@ -7,10 +7,7 @@
     "develop": "strapi develop",
     "start": "strapi start",
     "build": "strapi build",
-    "strapi": "strapi",
-    "format": "prettier '**.{js,jsx,ts,tsx}' --write --config ./.prettierrc",
-    "lint": "eslint . --ext ts,tsx",
-    "lint:fix": "eslint --fix . --ext ts,tsx"
+    "strapi": "strapi"
   },
   "dependencies": {
     "@strapi/plugin-i18n": "4.15.5",

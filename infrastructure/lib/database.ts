@@ -1,5 +1,5 @@
 import { NestedStack, NestedStackProps } from 'aws-cdk-lib'
-import { IVpc, Peer, Port, SecurityGroup, SubnetType } from 'aws-cdk-lib/aws-ec2'
+import { IVpc, Port, SecurityGroup, SubnetType } from 'aws-cdk-lib/aws-ec2'
 import {
   AuroraPostgresEngineVersion,
   ClusterInstance,
@@ -14,6 +14,7 @@ import { Construct } from 'constructs'
 interface DatabaseProps extends NestedStackProps {
   vpc: IVpc
   applicationName: string
+  sg: SecurityGroup
 }
 
 class Database extends NestedStack {
@@ -23,12 +24,12 @@ class Database extends NestedStack {
 
   constructor(scope: Construct, id: string, props?: DatabaseProps) {
     super(scope, id, props)
-    const { vpc, applicationName } = props!
+    const { vpc, applicationName, sg } = props!
     const dbSecurityGroup = new SecurityGroup(this, 'DBClusterSecurityGroup', {
       vpc,
     })
 
-    dbSecurityGroup.addIngressRule(Peer.ipv4(vpc.privateSubnets[0].ipv4CidrBlock), Port.tcp(5432))
+    dbSecurityGroup.addIngressRule(sg, Port.tcp(5432))
 
     this.dbSecret = new Secret(this, 'DBCredentialsSecret', {
       secretName: `${applicationName}-credentials`,
