@@ -6,7 +6,6 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    'plugin:react/recommended',
     'plugin:prettier/recommended',
     'airbnb',
     'airbnb-typescript',
@@ -21,7 +20,7 @@ module.exports = {
     sourceType: 'module',
     project: ['./tsconfig.json'],
   },
-  plugins: ['prettier', 'react', 'react-hooks', '@typescript-eslint'],
+  plugins: ['prettier', '@typescript-eslint'],
   ignorePatterns: ['*.js'],
   rules: {
     'operator-linebreak': [
@@ -61,25 +60,6 @@ module.exports = {
       {
         namedComponents: 'arrow-function',
         unnamedComponents: 'arrow-function',
-      },
-    ],
-    'import/order': [
-      2,
-      {
-        groups: ['builtin', 'external', 'internal'],
-        pathGroups: [
-          {
-            pattern: 'react',
-            group: 'external',
-            position: 'before',
-          },
-        ],
-        pathGroupsExcludedImportTypes: ['react'],
-        'newlines-between': 'always',
-        alphabetize: {
-          order: 'asc',
-          caseInsensitive: true,
-        },
       },
     ],
     'arrow-body-style': [0, 'never'],

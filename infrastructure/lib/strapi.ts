@@ -1,42 +1,46 @@
-import { Stack, StackProps } from 'aws-cdk-lib'
-import { Construct } from 'constructs'
-import { Certificate } from './certificate'
-import Database from './database'
-import { ECSService } from './ecs-service'
-import { Route53Record } from './route53-record'
-import { StrapiVpc } from './vpc'
-import { S3PublicBucket } from './public-s3-bucket'
-import { SecurityGroup, Port } from 'aws-cdk-lib/aws-ec2'
+import { Stack, StackProps } from "aws-cdk-lib";
+import { Construct } from "constructs";
+import { Certificate } from "./certificate";
+import Database from "./database";
+import { ECSService } from "./ecs-service";
+import { Route53Record } from "./route53-record";
+import { StrapiVpc } from "./vpc";
+import { S3PublicBucket } from "./public-s3-bucket";
+import { SecurityGroup, Port } from "aws-cdk-lib/aws-ec2";
 
 class StrapiStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
-    super(scope, id, props)
+    super(scope, id, props);
 
-    const vpc = new StrapiVpc(this, StrapiVpc.name, {})
+    const vpc = new StrapiVpc(this, StrapiVpc.name, {});
 
-    const applicationName = this.node.tryGetContext('applicationName')
-    const hostedZoneDomainName = this.node.tryGetContext('hostedZoneDomainName')
+    const applicationName = this.node.tryGetContext("applicationName");
+    const hostedZoneDomainName = this.node.tryGetContext(
+      "hostedZoneDomainName"
+    );
 
-    const allowedOrigin = this.node.tryGetContext('allowedOrigin')
+    const allowedOrigin = this.node.tryGetContext("allowedOrigin");
 
-    const domainName = `${applicationName}.${hostedZoneDomainName}`
+    const domainName = `${applicationName}.${hostedZoneDomainName}`;
 
-    const sg = new SecurityGroup(this, 'ServiceSecurityGroup', {
+    const sg = new SecurityGroup(this, "ServiceSecurityGroup", {
       vpc: vpc.vpc,
-    })
+    });
 
     const database = new Database(this, Database.name, {
       applicationName,
       vpc: vpc.vpc,
       sg,
-    })
+    });
 
     const certificate = new Certificate(this, Certificate.name, {
       hostedZoneDomainName,
       domainName,
-    })
+    });
 
-    const publicBucket = new S3PublicBucket(this, S3PublicBucket.name, { allowedOrigin })
+    const publicBucket = new S3PublicBucket(this, S3PublicBucket.name, {
+      allowedOrigin,
+    });
 
     const ecsServiceStack = new ECSService(this, ECSService.name, {
       certificate: certificate.certificate,
@@ -49,14 +53,14 @@ class StrapiStack extends Stack {
       applicationName,
       accessSecret: publicBucket.accessSecret,
       s3PublicBucket: publicBucket.bucket,
-    })
+    });
 
     new Route53Record(this, Route53Record.name, {
       hostedZoneDomainName,
       applicationName,
       loadBalancer: ecsServiceStack.loadBalancer,
-    })
+    });
   }
 }
 
-export { StrapiStack }
+export { StrapiStack };

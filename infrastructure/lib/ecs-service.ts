@@ -3,7 +3,10 @@ import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager'
 import { IVpc, SecurityGroup, Port, Peer } from 'aws-cdk-lib/aws-ec2'
 import { Cluster, ContainerImage, Secret as ecs_Secret } from 'aws-cdk-lib/aws-ecs'
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns'
-import { ApplicationLoadBalancer, IApplicationLoadBalancer } from 'aws-cdk-lib/aws-elasticloadbalancingv2'
+import {
+  ApplicationLoadBalancer,
+  IApplicationLoadBalancer,
+} from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam'
 import { Bucket } from 'aws-cdk-lib/aws-s3'
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager'
@@ -53,9 +56,17 @@ export class ECSService extends NestedStack {
 
     const cluster = new Cluster(this, 'Cluster', { vpc })
 
+    const albSecurityGroup = new SecurityGroup(this, 'ALBSecurityGroup', {
+      vpc,
+    })
+
+    albSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(443))
+    albSecurityGroup.addEgressRule(sg, Port.tcp(1337), 'connect to ECS cluster', true)
+
     const loadBalancer = new ApplicationLoadBalancer(this, 'ApplicationLoadBalancer', {
       vpc,
       internetFacing: true,
+      securityGroup: albSecurityGroup,
     })
 
     const loadBalancedService = new ApplicationLoadBalancedFargateService(this, 'FargateService', {
@@ -91,9 +102,6 @@ export class ECSService extends NestedStack {
     loadBalancedService.taskDefinition.addToExecutionRolePolicy(policyStatement)
 
     this.loadBalancer = loadBalancedService.loadBalancer
-
-    // to fix when docs work
-    // sg.addIngressRule(loadBalancer.securityGroup, Port.tcp(1337))
   }
 
   private getSecretsDefinition(dbSecret: ISecret, strapiSecret: ISecret, accessSecret: ISecret) {

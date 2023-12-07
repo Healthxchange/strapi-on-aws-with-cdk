@@ -1,6 +1,3 @@
 node_modules
 !.eslintrc.js
-/**/types/generated
-/**/cdk.out
-/**/dist
-/**/.yarn/
+cdk.out
