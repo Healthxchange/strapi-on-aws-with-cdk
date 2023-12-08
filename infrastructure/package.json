@@ -2,7 +2,7 @@
   "name": "infrastructure",
   "private": true,
   "version": "0.1.0",
-  "bin": "bin/strapi.ts",
+  "bin": "bin/app.ts",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
