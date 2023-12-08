@@ -9507,9 +9507,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.601":
-  version: 1.4.607
-  resolution: "electron-to-chromium@npm:1.4.607"
-  checksum: 371c63dd1f868d39d143abb4360684be8a56f609dec0cfbca5eed2d67f038346dd1a5042e99092d3000e30285896e2cd1f6559a67665010bd4bb9657b8ef85e0
+  version: 1.4.608
+  resolution: "electron-to-chromium@npm:1.4.608"
+  checksum: be1c28a5fe47a1c30d2e04688439fc46b548dfd8413d54ccf7cff4902205e8bf42e539633fd1b401da8463a8c37085950d1082b2a59cee71ad5e3fbf983f6cbd
   languageName: node
   linkType: hard
 
@@ -12076,7 +12076,7 @@ __metadata:
     typescript: "npm:^5.3.2"
     uuid: "npm:^9.0.0"
   bin:
-    infrastructure: bin/strapi.ts
+    infrastructure: bin/app.ts
   languageName: unknown
   linkType: soft
 
