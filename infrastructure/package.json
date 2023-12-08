@@ -1,8 +1,8 @@
 {
-  "name": "my-awesome-strapi",
+  "name": "infrastructure",
   "private": true,
   "version": "0.1.0",
-  "bin": "bin/my-awesome-strapi.js",
+  "bin": "bin/strapi.ts",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
