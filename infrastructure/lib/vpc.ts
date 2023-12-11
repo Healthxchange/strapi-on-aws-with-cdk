@@ -17,10 +17,6 @@ export class StrapiVpc extends NestedStack {
           subnetType: SubnetType.PUBLIC,
         },
         {
-          name: 'private-subnet',
-          subnetType: SubnetType.PRIVATE_WITH_EGRESS,
-        },
-        {
           name: 'isolated-subnet',
           subnetType: SubnetType.PRIVATE_ISOLATED,
         },

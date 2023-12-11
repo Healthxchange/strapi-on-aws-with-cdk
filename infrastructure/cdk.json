@@ -32,8 +32,29 @@
     "@aws-cdk/aws-iam:standardizedServicePrincipals": true,
     "@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker": true,
 
-    "applicationName": "strapi",
-    "hostedZoneDomainName": "marketing.cleverclinic.co.uk",
-    "allowedOrigin": "https://www.cleverclinic.co.uk"
+    "prod": {
+      "applicationName": "strapi",
+      "subdomain": "strapi",
+      "hostedZoneDomainName": "marketing.cleverclinic.co.uk",
+      "allowedOrigin": "https://www.cleverclinic.co.uk"
+    },
+    "uat": {
+      "applicationName": "strapi",
+      "subdomain": "strapi-uat",
+      "hostedZoneDomainName": "marketing.cleverclinic.co.uk",
+      "allowedOrigin": "https://www.cleverclinic.co.uk"
+    },
+    "qa": {
+      "applicationName": "strapi",
+      "subdomain": "strapi-qa",
+      "hostedZoneDomainName": "marketing.cleverclinic.co.uk",
+      "allowedOrigin": "https://www.cleverclinic.co.uk"
+    },
+    "dev": {
+      "applicationName": "strapi",
+      "subdomain": "strapi-dev",
+      "hostedZoneDomainName": "marketing.cleverclinic.co.uk",
+      "allowedOrigin": "https://www.cleverclinic.co.uk"
+    }
   }
 }

@@ -94,6 +94,15 @@ export class ECSService extends NestedStack {
       securityGroups: [sg],
     })
 
+    const scalableTarget = loadBalancedService.service.autoScaleTaskCount({
+      minCapacity: 1,
+      maxCapacity: 3,
+    })
+
+    scalableTarget.scaleOnCpuUtilization('CpuScaling', {
+      targetUtilizationPercent: 75,
+    })
+
     const policyStatement = new PolicyStatement({
       resources: [dbSecret.secretFullArn!, strapiSecret.secretFullArn!],
       actions: ['secretsmanager:GetSecretValue'],
@@ -112,6 +121,7 @@ export class ECSService extends NestedStack {
       APP_KEYS: ecs_Secret.fromSecretsManager(strapiSecret, 'StrapiKey'),
       API_TOKEN_SALT: ecs_Secret.fromSecretsManager(strapiSecret, 'StrapiKey'),
       ADMIN_JWT_SECRET: ecs_Secret.fromSecretsManager(strapiSecret, 'StrapiKey'),
+      TRANSFER_TOKEN_SALT: ecs_Secret.fromSecretsManager(strapiSecret, 'StrapiKey'),
       ACCESS_KEY_ID: ecs_Secret.fromSecretsManager(accessSecret, 'accessKeyId'),
       SECRET_ACCESS_KEY: ecs_Secret.fromSecretsManager(accessSecret, 'secretAccessKey'),
     }
