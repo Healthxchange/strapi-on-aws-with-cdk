@@ -8,10 +8,10 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "cdk-deploy-prod": "cdk deploy -c config=prod",
-    "cdk-deploy-uat": "cdk deploy -c config=uat",
-    "cdk-deploy-qa": "cdk deploy -c config=qa",
-    "cdk-deploy-dev": "cdk deploy -c config=dev"
+    "cdk-prod": "cdk -c config=prod",
+    "cdk-uat": "cdk -c config=uat",
+    "cdk-qa": "cdk -c config=qa",
+    "cdk-dev": "cdk -c config=dev"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",

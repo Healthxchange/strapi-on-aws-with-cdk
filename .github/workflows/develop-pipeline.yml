@@ -2,13 +2,13 @@ name: strapi on aws pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
 
   pull_request:
-    branches: [main]
+    branches: [develop]
 
 env:
-  APPLICATION_NAME: strapi
+  APPLICATION_NAME: strapi-uat
 
 jobs:
   build-and-deploy-strapi:
@@ -28,4 +28,4 @@ jobs:
           cd infrastructure \
            && corepack enable \
            && yarn install \
-           && yarn cdk-prod deploy --require-approval never
+           && yarn cdk-uat deploy --require-approval never

@@ -6,7 +6,7 @@ import { ECSService } from './ecs-service'
 import { Route53Record } from './route53-record'
 import { StrapiVpc } from './vpc'
 import { S3PublicBucket } from './public-s3-bucket'
-import { SecurityGroup, Port } from 'aws-cdk-lib/aws-ec2'
+import { SecurityGroup } from 'aws-cdk-lib/aws-ec2'
 import { BuildConfig } from './build-config'
 
 class StrapiStack extends Stack {
