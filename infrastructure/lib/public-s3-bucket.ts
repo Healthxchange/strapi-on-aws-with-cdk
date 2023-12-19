@@ -5,7 +5,7 @@ import { Construct } from 'constructs'
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager'
 
 export interface S3PublicBucketProps extends NestedStackProps {
-  allowedOrigin: string
+  allowedOrigins: string[]
 }
 
 export class S3PublicBucket extends NestedStack {
@@ -15,7 +15,7 @@ export class S3PublicBucket extends NestedStack {
   constructor(scope: Construct, id: string, props: S3PublicBucketProps) {
     super(scope, id, props)
 
-    const { allowedOrigin } = props!
+    const { allowedOrigins } = props!
 
     const user = new iam.User(this, 'User')
     const accessKey = new iam.AccessKey(this, 'AccessKey', { user })
@@ -35,7 +35,7 @@ export class S3PublicBucket extends NestedStack {
         s3.HttpMethods.PUT,
         s3.HttpMethods.DELETE,
       ],
-      allowedOrigins: [allowedOrigin],
+      allowedOrigins,
       maxAge: 3000,
     }
 

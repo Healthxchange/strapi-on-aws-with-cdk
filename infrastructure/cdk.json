@@ -36,25 +36,25 @@
       "applicationName": "strapi",
       "subdomain": "strapi",
       "hostedZoneDomainName": "marketing.cleverclinic.co.uk",
-      "allowedOrigin": "https://www.cleverclinic.co.uk"
+      "allowedOrigins": ["https://www.cleverclinic.co.uk"]
     },
     "uat": {
       "applicationName": "strapi",
       "subdomain": "strapi-uat",
       "hostedZoneDomainName": "marketing.cleverclinic.co.uk",
-      "allowedOrigin": "https://www.cleverclinic.co.uk"
+      "allowedOrigins": ["https://www.cleverclinic.co.uk"]
     },
     "qa": {
       "applicationName": "strapi",
       "subdomain": "strapi-qa",
       "hostedZoneDomainName": "marketing.cleverclinic.co.uk",
-      "allowedOrigin": "https://www.cleverclinic.co.uk"
+      "allowedOrigins": ["https://www.cleverclinic.co.uk"]
     },
     "dev": {
       "applicationName": "strapi",
       "subdomain": "strapi-dev",
       "hostedZoneDomainName": "marketing.cleverclinic.co.uk",
-      "allowedOrigin": "https://www.cleverclinic.co.uk"
+      "allowedOrigins": ["https://www.cleverclinic.co.uk"]
     }
   }
 }

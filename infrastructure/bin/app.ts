@@ -23,7 +23,7 @@ function getConfig() {
     applicationName: ensureString(unparsedEnv, 'applicationName'),
     subdomain: ensureString(unparsedEnv, 'subdomain'),
     hostedZoneDomainName: ensureString(unparsedEnv, 'hostedZoneDomainName'),
-    allowedOrigin: ensureString(unparsedEnv, 'allowedOrigin'),
+    allowedOrigins: ensureString(unparsedEnv, 'allowedOrigins'),
     environment: env,
     stackName: ensureString(unparsedEnv, 'applicationName') + env,
   }

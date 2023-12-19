@@ -17,7 +17,7 @@ class StrapiStack extends Stack {
 
     const stackName = buildConfig.stackName
     const hostedZoneDomainName = buildConfig.hostedZoneDomainName
-    const allowedOrigin = buildConfig.allowedOrigin
+    const allowedOrigins = buildConfig.allowedOrigins
 
     const domainName = `${buildConfig.subdomain}.${hostedZoneDomainName}`
 
@@ -37,7 +37,7 @@ class StrapiStack extends Stack {
     })
 
     const publicBucket = new S3PublicBucket(this, S3PublicBucket.name, {
-      allowedOrigin,
+      allowedOrigins,
     })
 
     const ecsServiceStack = new ECSService(this, ECSService.name, {
